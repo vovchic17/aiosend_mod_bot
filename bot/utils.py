@@ -40,3 +40,7 @@ def get_sender_chat_id(message: Message) -> int | None:
     ):
         return message.reply_to_message.sender_chat.id
     return None
+
+
+async def get_chat_admins(message: Message) -> list[int]:
+    return [admin.user.id for admin in await message.chat.get_administrators()]
