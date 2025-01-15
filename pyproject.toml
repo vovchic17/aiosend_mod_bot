@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "bot"
+version = "0.1.0"
+description = "The telegram bot for @aiosend (t.me/aiosend) chat moderation."
+authors = ["VoVcHiC <tsvetkovvova17@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+aiogram = "^3.17.0"
+pydantic-settings = "^2.7.1"
+
+[tool.ruff]
+line-length = 79
+indent-width = 4
+target-version = "py310"
+
+[tool.ruff.lint]
+ignore = [
+    "D102",   # undocumented-public-method
+    "D103",   # undocumented-public-function
+    "D100",   # undocumented-public-module
+    "D104",   # undocumented-public-package
+    "D106",   # undocumented-public-nested-class
+    "D107",   # undocumented-public-init
+    "D203",   # one-blank-line-before-class
+    "D212",   # multi-line-summary-first-line
+    "COM812", # missing-trailing-comma
+    "RUF001", # ambiguous-unicode-character-string
+]
+select = ["ALL"]
+fixable = ["ALL"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-line-length = "dynamic"
+
+[tool.mypy]
+plugins = ['pydantic.mypy']
+ignore_missing_imports = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
