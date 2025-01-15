@@ -19,7 +19,7 @@ async def ro_handler(
         return
 
     if violator.id in (
-        await utils.get_chat_admins(message),
+        *await utils.get_chat_admins(message),
         config.ANON_ADMIN_ID,
         bot.id,
     ):  # don't ban admins or self
@@ -66,7 +66,7 @@ async def ban_handler(
         return
 
     if violator.id in (
-        await utils.get_chat_admins(message),
+        *await utils.get_chat_admins(message),
         config.ANON_ADMIN_ID,
         bot.id,
     ):  # ignore admins or self
