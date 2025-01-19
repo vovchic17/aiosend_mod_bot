@@ -14,7 +14,7 @@ router = Router(name=__name__)
 @router.message(Command(prefix="!", commands="report"))
 async def report_handler(message: Message, config: Settings, bot: Bot) -> None:
     violator = utils.get_replied_user(message)
-    reason = ""
+    reason = "Не указана"
     if message.text is not None:
         reason = message.text.removeprefix("!report").strip()
     if violator is None:  # no reply
