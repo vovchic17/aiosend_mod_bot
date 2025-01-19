@@ -1,5 +1,8 @@
+from contextlib import suppress
+
 import utils
 from aiogram import Bot, Router
+from aiogram.exceptions import TelegramForbiddenError
 from aiogram.filters import Command
 from aiogram.types import Message
 from config_reader import Settings
@@ -26,7 +29,8 @@ async def report_handler(message: Message, config: Settings, bot: Bot) -> None:
 
     for admin_id in [*await utils.get_chat_admins(message)]:
         if admin_id != bot.id:
-            await bot.send_message(
-                admin_id,
-                f"Жалоба на сообщение: {message.reply_to_message.get_url()}",  # type: ignore[union-attr]
-            )
+            with suppress(TelegramForbiddenError):
+                await bot.send_message(
+                    admin_id,
+                    f"Жалоба на сообщение: {message.reply_to_message.get_url()}",  # type: ignore[union-attr]
+                )
