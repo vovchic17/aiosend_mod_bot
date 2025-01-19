@@ -1,3 +1,4 @@
+import html
 from contextlib import suppress
 
 import utils
@@ -13,6 +14,9 @@ router = Router(name=__name__)
 @router.message(Command(prefix="!", commands="report"))
 async def report_handler(message: Message, config: Settings, bot: Bot) -> None:
     violator = utils.get_replied_user(message)
+    reason = ""
+    if message.text is not None:
+        reason = message.text.removeprefix("!report").strip()
     if violator is None:  # no reply
         await message.reply("🫨")
         return
@@ -32,5 +36,7 @@ async def report_handler(message: Message, config: Settings, bot: Bot) -> None:
             with suppress(TelegramForbiddenError):
                 await bot.send_message(
                     admin_id,
-                    f"Жалоба на сообщение: {message.reply_to_message.get_url()}",  # type: ignore[union-attr]
+                    "Жалоба на сообщение: "
+                    f"{message.reply_to_message.get_url()}\n"  # type: ignore[union-attr]
+                    f"Причина:\n<i>{html.escape(reason)}</i>",
                 )
