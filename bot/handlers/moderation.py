@@ -117,3 +117,40 @@ async def unban_handler(
         f"✅ {violator.mention_html()} был разбанен",
         disable_web_page_preview=True,
     )
+
+@router.message(Command(prefix="!", commands="report"))
+async def report_handler(
+    message: Message,
+    config: Settings,
+    bot: Bot
+) -> None:
+    violator = utils.get_replied_user(message)
+    if violator is None:  # no reply
+        await message.reply(
+            "Жалобы на призраков не обрабатываются"
+        )
+        return
+
+    if violator.id in (
+        *await utils.get_chat_admins(message),
+        config.ANON_ADMIN_ID,
+        bot.id,
+    ):  # ignore admins or self
+        await message.reply(
+            "Извините, но на модераторов нельзя жаловаться"
+        )
+        return
+
+    await message.reply(
+        "Жалоба отправлена администрации"
+    )
+
+    for admin_id in [
+        *await utils.get_chat_admins(message),
+        config.ANON_ADMIN_ID
+    ]:
+        if admin_id != bot.id:
+            await bot.send_message(
+                admin_id,
+                f"Жалоба на сообщение: {message.reply_to_message.get_url()}" # type: ignore[union-attr]
+            )
