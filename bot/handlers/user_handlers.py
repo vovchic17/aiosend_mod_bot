@@ -39,4 +39,5 @@ async def report_handler(message: Message, config: Settings, bot: Bot) -> None:
                     "Жалоба на сообщение: "
                     f"{message.reply_to_message.get_url()}\n"  # type: ignore[union-attr]
                     f"Причина:\n<i>{html.escape(reason)}</i>",
+                    disable_web_page_preview=True,
                 )
