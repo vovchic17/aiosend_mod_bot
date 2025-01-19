@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from config_reader import config
 from filters import IsAdmin
-from handlers import moderation_router, service_router
+from handlers import moderation_router, service_router, user_handlers_router
 
 
 async def main() -> None:
@@ -19,6 +19,7 @@ async def main() -> None:
     dp.include_routers(
         moderation_router,
         service_router,
+        user_handlers_router,
     )
     await dp.start_polling(bot)
 
