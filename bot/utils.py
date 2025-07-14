@@ -1,6 +1,9 @@
 from datetime import timedelta
 
+from aiogram import Bot
 from aiogram.types import Message, User
+from aiogram.types.chat_member_administrator import ChatMemberAdministrator
+from aiogram.types.chat_member_owner import ChatMemberOwner
 
 
 def get_replied_user(message: Message) -> User | None:
@@ -44,3 +47,20 @@ def get_sender_chat_id(message: Message) -> int | None:
 
 async def get_chat_admins(message: Message) -> list[int]:
     return [admin.user.id for admin in await message.chat.get_administrators()]
+
+
+async def can_restrict_members(message: Message, bot: Bot) -> bool:
+    if message.from_user:
+        member = await bot.get_chat_member(
+            chat_id=message.chat.id,
+            user_id=message.from_user.id,
+        )
+        if isinstance(member, ChatMemberOwner):
+            return True
+        return (
+            member.can_restrict_members if isinstance(
+                member,
+                ChatMemberAdministrator
+            ) else False
+        )
+    return False

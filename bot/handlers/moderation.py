@@ -26,6 +26,13 @@ async def ro_handler(
         await message.reply("🫨")
         return
 
+    if not await utils.can_restrict_members(
+        message,
+        bot
+    ): # admin can't restrict member's rights
+        await message.reply("У вас недостаточно прав для этого действия")
+        return
+
     await message.chat.restrict(
         violator.id,
         permissions=ChatPermissions(can_send_messages=False),
@@ -38,14 +45,22 @@ async def ro_handler(
 
 
 @router.message(Command(prefix="!", commands="unro"))
-async def unro_handler(message: Message) -> None:
+async def unro_handler(message: Message, bot: Bot) -> None:
     violator = utils.get_replied_user(message)
     if violator is None:
         return
+
+    if not await utils.can_restrict_members(
+        message,
+        bot
+    ): # admin can't restrict member's rights
+        await message.reply("У вас недостаточно прав для этого действия")
+        return
+
     await message.chat.restrict(
         violator.id,
         permissions=ChatPermissions(
-            **{f: True for f in ChatPermissions.model_fields}
+            **dict.fromkeys(ChatPermissions.model_fields, True)
         ),
     )
     await message.reply(
@@ -71,6 +86,13 @@ async def ban_handler(
         bot.id,
     ):  # ignore admins or self
         await message.reply("🫨")
+        return
+
+    if not await utils.can_restrict_members(
+        message,
+        bot
+    ): # admin can't restrict member's rights
+        await message.reply("У вас недостаточно прав для этого действия")
         return
 
     if utils.get_sender_chat_id(message) is not None:  # message from channel
@@ -104,6 +126,13 @@ async def unban_handler(
         bot.id,
     ):  # ignore admins or self
         await message.reply("🫨")
+        return
+
+    if not await utils.can_restrict_members(
+        message,
+        bot
+    ): # admin can't restrict member's rights
+        await message.reply("У вас недостаточно прав для этого действия")
         return
 
     if utils.get_sender_chat_id(message) is not None:  # message from channel
