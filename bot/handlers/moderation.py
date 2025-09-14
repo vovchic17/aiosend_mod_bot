@@ -14,6 +14,9 @@ async def ro_handler(
     config: Settings,
     bot: Bot,
 ) -> None:
+    if message.from_user is None:
+        return
+
     violator = utils.get_replied_user(message)
     if violator is None:  # no reply
         return
@@ -26,10 +29,10 @@ async def ro_handler(
         await message.reply("🫨")
         return
 
-    if not await utils.can_restrict_members(
-        message,
-        bot
-    ): # admin can't restrict member's rights
+    if (
+        not await utils.can_restrict_members(message, bot)
+        and message.from_user.id != config.ANON_ADMIN_ID
+    ):  # admin can't restrict member's rights
         await message.reply("У вас недостаточно прав для этого действия")
         return
 
@@ -45,22 +48,25 @@ async def ro_handler(
 
 
 @router.message(Command(prefix="!", commands="unro"))
-async def unro_handler(message: Message, bot: Bot) -> None:
+async def unro_handler(message: Message, bot: Bot, config: Settings) -> None:
+    if message.from_user is None:
+        return
+
     violator = utils.get_replied_user(message)
     if violator is None:
         return
 
-    if not await utils.can_restrict_members(
-        message,
-        bot
-    ): # admin can't restrict member's rights
+    if (
+        not await utils.can_restrict_members(message, bot)
+        and message.from_user.id != config.ANON_ADMIN_ID
+    ):  # admin can't restrict member's rights
         await message.reply("У вас недостаточно прав для этого действия")
         return
 
     await message.chat.restrict(
         violator.id,
         permissions=ChatPermissions(
-            **dict.fromkeys(ChatPermissions.model_fields, True)
+            **dict.fromkeys(ChatPermissions.model_fields, True)  # type: ignore[attr-defined]
         ),
     )
     await message.reply(
@@ -76,6 +82,9 @@ async def ban_handler(
     config: Settings,
     bot: Bot,
 ) -> None:
+    if message.from_user is None:
+        return
+
     violator = utils.get_replied_user(message)
     if violator is None:  # no reply
         return
@@ -88,10 +97,10 @@ async def ban_handler(
         await message.reply("🫨")
         return
 
-    if not await utils.can_restrict_members(
-        message,
-        bot
-    ): # admin can't restrict member's rights
+    if (
+        not await utils.can_restrict_members(message, bot)
+        and message.from_user.id != config.ANON_ADMIN_ID
+    ):  # admin can't restrict member's rights
         await message.reply("У вас недостаточно прав для этого действия")
         return
 
@@ -117,6 +126,9 @@ async def unban_handler(
     config: Settings,
     bot: Bot,
 ) -> None:
+    if message.from_user is None:
+        return
+
     violator = utils.get_replied_user(message)
     if violator is None:  # no reply
         return
@@ -128,10 +140,10 @@ async def unban_handler(
         await message.reply("🫨")
         return
 
-    if not await utils.can_restrict_members(
-        message,
-        bot
-    ): # admin can't restrict member's rights
+    if (
+        not await utils.can_restrict_members(message, bot)
+        and message.from_user.id != config.ANON_ADMIN_ID
+    ):  # admin can't restrict member's rights
         await message.reply("У вас недостаточно прав для этого действия")
         return
 
